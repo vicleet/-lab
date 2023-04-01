@@ -1,0 +1,35 @@
+#include <stdio.h>
+struct process {
+char name[10];
+int arrival_time;
+int burst_time;
+int turnaround_time;
+};
+int main() {
+    struct process p[3];
+    int i;
+float avg_turnaround_time = 0;
+// 输入进程信息
+for (i = 0; i < 3; i++) {   
+printf("Enter process name, arrival time and burst time for process %d:\n", i+1);
+        scanf("%s %d %d", p[i].name, &p[i].arrival_time, &p[i].burst_time);
+    }
+    // 使用先来先服务算法调度进程
+    for (i = 0; i < 3; i++) {
+        // 当前进程等待的时间
+        int wait_time = 0;
+        // 计算周转时间
+        p[i].turnaround_time = p[i].burst_time + wait_time;
+        // 累加周转时间，用于计算平均周转时间
+        avg_turnaround_time += p[i].turnaround_time;
+        // 打印进程信息
+        printf("Process name: %s, arrival time: %d, burst time: %d, turnaround time: %d\n",
+               p[i].name, p[i].arrival_time, p[i].burst_time, p[i].turnaround_time);
+        // 更新等待时间
+        wait_time += p[i].burst_time;
+    }
+    // 计算平均周转时间
+    avg_turnaround_time /= 3;
+    printf("Average turnaround time: %.2f\n", avg_turnaround_time);
+    return 0;
+}
