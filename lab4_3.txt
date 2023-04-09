@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+int main() {
+    pid_t pid;
+    int i;
+    for (i = 0; i < 4; i++) {
+        pid = fork();
+        if (pid == 0) {
+            printf("This is A\n");
+            printf("进程号: %d\n", getpid());
+            return 0;
+        }
+    }
+    return 0;
+}
