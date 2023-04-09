@@ -1,0 +1,38 @@
+#以下是一个简单的创建子进程的C程序，其中使用了fork()函数创建子进程。在父进程中使用了signal()函数将SIGCHLD信号处理程序设置为SIG_IGN，以取消wait()函数的调用，从而使父进程不必等待子进程的终止。
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+
+void sigchld_handler(int sig)
+{
+  printf("Child process terminated.\n");
+}
+
+int main()
+{
+  pid_t pid;
+
+  signal(SIGCHLD, sigchld_handler); // 设置SIGCHLD信号处理程序为忽略
+
+  pid = fork(); // 创建子进程
+
+  if (pid < 0) { // fork()失败
+    printf("Failed to create child process.\n");
+    exit(1);
+  } else if (pid == 0) { // 子进程
+    printf("This is child process with PID %d.\n", getpid());
+    exit(0);
+  } else { // 父进程
+    printf("This is parent process with PID %d.\n", getpid());
+    sleep(1);
+    printf("Parent process continues running.\n");
+  }
+
+  return 0;
+}
+#在上述代码中，当父进程创建子进程后，使用signal()函数将SIGCHLD信号处理程序设置为sigchld_handler函数，该函数的作用是在子进程终止时输出一条消息。
+
+#由于SIGCHLD信号在子进程终止时被发送到父进程，因此在设置了SIGCHLD信号处理程序后，父进程将不会因为wait()函数而阻塞，而是可以继续执行，直到子进程终止时触发SIGCHLD信号处理程序。
