@@ -1,0 +1,25 @@
+#include stdio.h
+#include stdlib.h
+#include unistd.h
+#include syswait.h
+
+int main() {
+    pid_t pid;
+
+    pid = fork();  创建子进程
+
+    if (pid  0) {  创建进程失败
+        fprintf(stderr, Failed to forkn);
+        exit(1);
+    } else if (pid == 0) {  子进程
+        printf(This is child processn);
+        exit(0);
+    } else {  父进程
+        printf(This is parent processn);
+         取消wait()函数
+         wait(NULL);
+        printf(Parent process continuesn);
+    }
+
+    return 0;
+}
