@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <unistd.h>
+
+int main() {
+    int i, n = 10; // n为进程数，这里设置为10
+    pid_t pid;
+
+    for (i = 0; i < n; i++) {
+        pid = fork(); // 创建子进程
+        if (pid == 0) { // 子进程
+            if (i < n/2) {
+                printf("This is A, pid: %d\n", getpid()); // 输出This is A
+            } else {
+                printf("This is B, pid: %d\n", getpid()); // 输出This is B
+            }
+            return 0;
+        }
+    }
+
+    return 0;
+}
