@@ -1,0 +1,59 @@
+#include <stdio.h>
+
+int main() {
+    // 进程数
+    const int num_processes = 3;
+
+    // 进程的名称和运行时间
+    char process_names[num_processes][10];
+    int process_runtimes[num_processes];
+
+    // 输入进程名称和运行时间
+    for (int i = 0; i < num_processes; i++) {
+        printf("请输入进程%d的名称：", i + 1);
+        scanf("%s", process_names[i]);
+        printf("请输入进程%d的运行时间：", i + 1);
+        scanf("%d", &process_runtimes[i]);
+    }
+
+    // 短作业优先调度算法
+    int current_time = 0; // 当前时间
+    int shortest_job_index; // 当前最短作业的索引
+    int turnaround_times[num_processes]; // 周转时间
+
+    for (int i = 0; i < num_processes; i++) {
+        shortest_job_index = i;
+        for (int j = i + 1; j < num_processes; j++) {
+            if (process_runtimes[j] < process_runtimes[shortest_job_index]) {
+                shortest_job_index = j;
+            }
+        }
+        // 交换最短作业和当前作业
+        int temp_runtime = process_runtimes[i];
+        process_runtimes[i] = process_runtimes[shortest_job_index];
+        process_runtimes[shortest_job_index] = temp_runtime;
+
+        char temp_name[10];
+        strcpy(temp_name, process_names[i]);
+        strcpy(process_names[i], process_names[shortest_job_index]);
+        strcpy(process_names[shortest_job_index], temp_name);
+
+        // 计算周转时间
+        turnaround_times[i] = current_time + process_runtimes[i];
+        current_time += process_runtimes[i];
+    }
+
+    // 输出进程信息
+    printf("\n进程名\t\t运行时间\t周转时间\n");
+    for (int i = 0; i < num_processes; i++) {
+        printf("%s\t\t%d\t\t%d\n", process_names[i], process_runtimes[i], turnaround_times[i]);
+    }
+
+    return 0;
+}
+//第 5 行：定义了进程数为 3。
+第 8 行和第 9 行：定义了一个二维字符数组 process_names，用于存储进程的名称；定义了一个整型数组 process_runtimes，用于存储进程的运行时间。
+第 12 行到第 19 行：使用 for 循环输入每个进程的名称和运行时间。
+第 22 行到第 32 行：使用短作业优先调度算法对进程进行排序，并计算出每个进程的周转时间。
+第 35 行到第 44 行：输出每个进程的进程名、运行时间、周转时间等信息。
+第 47 行：程序结束。
