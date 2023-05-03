@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+// 定义进程数量和资源数量的常量
+#define P 5
+#define R 3
+
+// 各个进程需要的资源数量
+int max[P][R] = {
+    {7, 5, 3},
+    {3, 2, 2},
+    {9, 0, 2},
+    {2, 2, 2},
+    {4, 3, 3}
+};
+
+// 当前可用的资源数量
+int available[R] = {3, 3, 2};
+
+// 进程已经得到的资源数量
+int allocation[P][R] = {
+    {0, 1, 0},
+    {2, 0, 0},
+    {3, 0, 2},
+    {2, 1, 1},
+    {0, 0, 2}
+};
+
+// 进程还需要的资源数量
+int need[P][R];
+
+// 标记每个进程是否可以完成
+bool finish[P];
+
+// 初始化 need 数组
+void init_need() {
+    for (int i = 0; i < P; i++) {
+        for (int j = 0; j < R; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+}
+
+// 检查当前状态是否安全
+bool is_safe() {
+    int work[R];
+    for (int i = 0; i < R; i++) {
+        work[i] = available[i];
+    }
+
+    int safe_sequence[P];
+    int count = 0;
+
+    while (count < P) {
+        bool found = false;
+        for (int i = 0; i < P; i++) {
+            if (!finish[i]) {
+                int j;
+                for (j = 0; j < R; j++) {
+                    if (need[i][j] > work[j]) {
+                        break;
+                    }
+                }
+                if (j == R) {
+                    for (int k = 0; k < R; k++) {
+                        work[k] += allocation[i][k];
+                    }
+                    safe_sequence[count++] = i;
+                    finish[i] = true;
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            return false;
+        }
+    }
+
+    printf("安全序列：");
+    for (int i = 0; i < P; i++) {
+        printf("%d ", safe_sequence[i]);
+    }
+    printf("\n");
+
+    return true;
+}
+
+int main() {
+    init_need();
+    if (is_safe()) {
+        printf("当前状态是安全的。\n");
+    } else {
+        printf("当前状态是不安全的。\n");
+    }
+    return 0;
+}
